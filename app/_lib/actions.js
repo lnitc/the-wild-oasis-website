@@ -5,6 +5,7 @@ import { supabase } from "@/app/_lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getBookings } from "@/app/_lib/data-service";
+import { th } from "date-fns/locale";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/account" });
@@ -28,7 +29,7 @@ export async function updateGuest(formData) {
 
   const updateData = { nationality, countryFlag, nationalID };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("guests")
     .update(updateData)
     .eq("id", session.user.guestId);
