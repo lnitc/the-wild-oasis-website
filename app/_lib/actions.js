@@ -5,7 +5,6 @@ import { supabase } from "@/app/_lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getBookings } from "@/app/_lib/data-service";
-import { th } from "date-fns/locale";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/account" });
@@ -93,4 +92,30 @@ export async function updateReservation(formData) {
   revalidatePath("/account/reservations");
   revalidatePath(`/account/reservations/edit/${id}`);
   redirect("/account/reservations");
+}
+
+export async function createReservation(bookingData, formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in to create a booking");
+
+  const newBooking = {
+    ...bookingData,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations").slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: "unconfirmed",
+    guestId: session.user.guestId,
+  };
+
+  const { error } = await supabase.from("bookings").insert([newBooking]);
+
+  if (error) {
+    throw new Error("Booking could not be created");
+  }
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect("/cabins/thankyou");
 }
