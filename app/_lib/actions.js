@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getBookings } from "@/app/_lib/data-service";
 
-export async function signInAction(formData) {
+export async function signInAction(state, formData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
@@ -14,7 +14,7 @@ export async function signInAction(formData) {
     await signIn("credentials", { email, password, redirectTo: "/account" });
   } catch (error) {
     if (error.type === "CredentialsSignin") {
-      throw new Error("Invalid credentials");
+      return { error: "Invalid email or password." };
     } else {
       console.error("An unexpected error occurred:", error);
       throw error;
