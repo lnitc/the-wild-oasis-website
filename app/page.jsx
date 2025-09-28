@@ -1,3 +1,5 @@
+// Based on "The Ultimate React Course 2025: React, Next.js, Redux & More" by Jonas Schmedtmann
+
 import Link from "next/link";
 import Image from "next/image";
 import bg from "@/public/bg.png";

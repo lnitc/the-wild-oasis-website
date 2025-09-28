@@ -1,3 +1,5 @@
+// Based on "The Ultimate React Course 2025: React, Next.js, Redux & More" by Jonas Schmedtmann
+
 import Header from "@/app/_components/Header";
 import { ReservationProvider } from "@/app/_components/ReservationContext";
 import "@/app/_styles/globals.css";
