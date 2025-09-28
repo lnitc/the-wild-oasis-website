@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CabinList from "@/app/_components/cabinList";
+import CabinList from "@/app/_components/CabinList";
 import Spinner from "@/app/_components/Spinner";
 import Filter from "@/app/_components/Filter";
 import ReservationReminder from "@/app/_components/ReservationReminder";
