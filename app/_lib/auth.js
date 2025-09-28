@@ -1,27 +1,38 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import { createGuest, getGuest } from "@/app/_lib/data-service";
+import Credentials from "next-auth/providers/credentials";
+import { getGuest } from "@/app/_lib/data-service";
 
 const authConfig = {
   providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    Credentials({
+      authorize: (credentials) => {
+        const testAccounts = [
+          {
+            email: process.env.USER1_EMAIL,
+            password: process.env.USER1_PASSWORD,
+          },
+          {
+            email: process.env.USER2_EMAIL,
+            password: process.env.USER2_PASSWORD,
+          },
+        ];
+        const testAccount = testAccounts.find((account) => {
+          return (
+            account.email === credentials.email &&
+            account.password === credentials.password
+          );
+        });
+        if (testAccount) {
+          return testAccount;
+        } else {
+          return null;
+        }
+      },
     }),
   ],
   callbacks: {
     authorized({ auth, request }) {
       return !!auth?.user;
-    },
-    async signIn({ user, account, profile }) {
-      try {
-        const existingGuest = await getGuest(user.email);
-        if (!existingGuest)
-          await createGuest({ email: user.email, fullName: user.name });
-        return true;
-      } catch {
-        return false;
-      }
     },
     async session({ session, user }) {
       const guest = await getGuest(session.user.email);
@@ -38,5 +49,6 @@ export const {
   auth,
   signIn,
   signOut,
+
   handlers: { GET, POST },
 } = NextAuth(authConfig);

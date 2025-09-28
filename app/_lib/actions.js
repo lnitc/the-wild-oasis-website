@@ -6,8 +6,20 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getBookings } from "@/app/_lib/data-service";
 
-export async function signInAction() {
-  await signIn("google", { redirectTo: "/account" });
+export async function signInAction(formData) {
+  const email = formData.get("email");
+  const password = formData.get("password");
+
+  try {
+    await signIn("credentials", { email, password, redirectTo: "/account" });
+  } catch (error) {
+    if (error.type === "CredentialsSignin") {
+      throw new Error("Invalid credentials");
+    } else {
+      console.error("An unexpected error occurred:", error);
+      throw error;
+    }
+  }
 }
 
 export async function signOutAction() {
