@@ -34,13 +34,32 @@ const authConfig = {
     authorized({ auth, request }) {
       return !!auth?.user;
     },
-    async session({ session, user }) {
-      const guest = await getGuest(session.user.email);
-      session.user.guestId = guest.id;
-      session.user.fullName = guest.fullName;
+
+    async jwt({ token, user }) {
+      if (user) {
+        const guest = await getGuest(user.email);
+        token.id = guest.id;
+        token.fullName = guest.fullName;
+      }
+      return token;
+    },
+
+    // async session({ session, user }) {
+    //   const guest = await getGuest(session.user.email);
+    //   session.user.guestId = guest.id;
+    //   session.user.fullName = guest.fullName;
+    //   return session;
+    // },
+
+    async session({ session, token }) {
+      if (token) {
+        session.user.guestId = token.id;
+        session.user.fullName = token.fullName;
+      }
       return session;
     },
   },
+  trustHost: true,
   pages: {
     signIn: "/login",
   },
