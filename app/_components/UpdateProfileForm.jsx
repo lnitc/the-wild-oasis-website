@@ -1,14 +1,16 @@
 "use client";
-//this is a client component for educational purposes
 
 import { updateGuest } from "@/app/_lib/actions";
 import SubmitButton from "@/app/_components/SubmitButton";
+import { useFormState } from "react-dom";
 
 function UpdateProfileForm({ guest, children }) {
   const { fullName, email, nationality, nationalID, countryFlag } = guest;
+  const initialState = { error: null };
+  const [state, formAction] = useFormState(updateGuest, initialState);
   return (
     <form
-      action={updateGuest}
+      action={formAction}
       className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
     >
       <div className="space-y-2">
@@ -51,7 +53,7 @@ function UpdateProfileForm({ guest, children }) {
           defaultValue={nationalID}
         />
       </div>
-
+      {state?.error && <div className="text-red-500">{state.error}</div>}
       <div className="flex justify-end items-center gap-6">
         <SubmitButton pendingLabel="Updating...">Update profile</SubmitButton>
       </div>

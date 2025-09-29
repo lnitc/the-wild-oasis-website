@@ -26,7 +26,7 @@ export async function signOutAction() {
   await signOut({ redirectTo: "/" });
 }
 
-export async function updateGuest(formData) {
+export async function updateGuest(state, formData) {
   const session = await auth();
 
   if (!session) throw new Error("You must be logged in to update your profile");
@@ -36,7 +36,11 @@ export async function updateGuest(formData) {
 
   const regex = /^[a-zA-Z0-9]{6,12}$/;
 
-  if (!regex.test(nationalID)) throw new Error("Invalid National ID");
+  if (!regex.test(nationalID))
+    return {
+      error:
+        "National ID must be 6-12 characters long and contain only uppercase/lowercase letters and numbers.",
+    };
 
   const updateData = { nationality, countryFlag, nationalID };
 
