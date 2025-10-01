@@ -1,4 +1,4 @@
-**[English Version](#the-wild-oasis-🏕️)** 
+**English follows Japanese** 
 <br></br>
 
 # ザ・ワイルド・オアシス 🏕️
